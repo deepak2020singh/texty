@@ -218,7 +218,8 @@ class PostViewModel(
         mediaUrls: List<Uri> = emptyList(),
         postType: PostType = PostType.ORIGINAL,
         parentPostId: String? = null,
-        context: Context
+        context: Context,
+        location: String? = null
     ) {
         try {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)

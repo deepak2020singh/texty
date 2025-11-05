@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -117,7 +118,6 @@ import com.example.texty.data.RepostType
 import com.example.texty.data.User
 import com.example.texty.ui.view_model.AuthViewModel
 import com.example.texty.ui.view_model.PostViewModel
-import com.google.android.material.loadingindicator.LoadingIndicator
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -564,8 +564,6 @@ fun FullScreenMediaViewer(
     }
 }
 
-
-
 @Composable
 fun FloatingActionButtonWithOptions(
     onNavigateToComposePost: () -> Unit,
@@ -580,6 +578,16 @@ fun FloatingActionButtonWithOptions(
         targetValue = if (showOptions) 45f else 0f,
         label = "FAB rotation"
     )
+
+    // Animation for FAB width (expands to pill shape when options shown)
+    val fabWidth by animateDpAsState(
+        targetValue = if (showOptions) 75.dp else 56.dp,
+        label = "FAB width",
+        animationSpec = tween(durationMillis = 300)
+    )
+
+    // Fixed radius for pill/circle shape (half of height)
+    val fabRadius = 28.dp
 
     val options = listOf(
         Triple(Icons.Outlined.AutoAwesome, "Go Live", { /* Handle go live */ }),
@@ -638,6 +646,7 @@ fun FloatingActionButtonWithOptions(
             onClick = { showOptions = !showOptions },
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
+            shape = RoundedCornerShape(fabRadius),
             elevation = FloatingActionButtonDefaults.elevation(
                 defaultElevation = 6.dp,
                 pressedElevation = 12.dp,
@@ -645,10 +654,11 @@ fun FloatingActionButtonWithOptions(
             ),
             interactionSource = interactionSource,
             modifier = Modifier
-                .size(56.dp)
+                .width(fabWidth)
+                .height(56.dp)
                 .shadow(
                     elevation = 6.dp,
-                    shape = androidx.compose.foundation.shape.CircleShape,
+                    shape = RoundedCornerShape(fabRadius),
                     ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                     spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                 )
@@ -705,6 +715,146 @@ fun FabOption(
         }
     }
 }
+
+//@Composable
+//fun FloatingActionButtonWithOptions(
+//    onNavigateToComposePost: () -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//    var showOptions by remember { mutableStateOf(false) }
+//    val coroutineScope = rememberCoroutineScope()
+//    val interactionSource = remember { MutableInteractionSource() }
+//
+//    // Animation for FAB icon rotation
+//    val rotation by animateFloatAsState(
+//        targetValue = if (showOptions) 45f else 0f,
+//        label = "FAB rotation"
+//    )
+//
+//    val options = listOf(
+//        Triple(Icons.Outlined.AutoAwesome, "Go Live", { /* Handle go live */ }),
+//        Triple(Icons.Outlined.ChatBubbleOutline, "Spaces", { /* Handle spaces */ }),
+//        Triple(Icons.Default.Edit, "Post", { onNavigateToComposePost() })
+//    )
+//
+//    Column(
+//        modifier = modifier
+//            .padding(end = 16.dp, bottom = 16.dp),
+//        verticalArrangement = Arrangement.spacedBy(12.dp),
+//        horizontalAlignment = Alignment.End
+//    ) {
+//        // Options Column (appears above FAB when expanded)
+//        AnimatedVisibility(
+//            visible = showOptions,
+//            enter = slideInVertically(
+//                initialOffsetY = { it }, // Slide up from below
+//                animationSpec = tween(300)
+//            ) + fadeIn(animationSpec = tween(300)),
+//            exit = slideOutVertically(
+//                targetOffsetY = { it } // Slide down out of view
+//            ) + fadeOut(animationSpec = tween(300))
+//        ) {
+//            Column(
+//                verticalArrangement = Arrangement.spacedBy(8.dp),
+//                horizontalAlignment = Alignment.End
+//            ) {
+//                options.forEachIndexed { index, (icon, text, onClick) ->
+//                    val delay = 50L * (options.size - 1 - index) // Staggered from top to bottom
+//                    LaunchedEffect(showOptions) {
+//                        // Optional: Add scale animation per option
+//                    }
+//                    FabOption(
+//                        icon = icon,
+//                        text = text,
+//                        onClick = {
+//                            coroutineScope.launch {
+//                                onClick()
+//                                showOptions = false
+//                            }
+//                        },
+//                        modifier = Modifier
+//                            .shadow(
+//                                elevation = 8.dp,
+//                                shape = RoundedCornerShape(25.dp),
+//                                ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+//                            )
+//                    )
+//                }
+//            }
+//        }
+//
+//        // Main FAB at the bottom
+//        FloatingActionButton(
+//            onClick = { showOptions = !showOptions },
+//            containerColor = MaterialTheme.colorScheme.primary,
+//            contentColor = MaterialTheme.colorScheme.onPrimary,
+//            elevation = FloatingActionButtonDefaults.elevation(
+//                defaultElevation = 6.dp,
+//                pressedElevation = 12.dp,
+//                hoveredElevation = 8.dp
+//            ),
+//            interactionSource = interactionSource,
+//            modifier = Modifier
+//                .size(56.dp)
+//                .shadow(
+//                    elevation = 6.dp,
+//                    shape = androidx.compose.foundation.shape.CircleShape,
+//                    ambientColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+//                    spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+//                )
+//        ) {
+//            Icon(
+//                imageVector = if (showOptions) Icons.Default.Close else Icons.Default.Edit,
+//                contentDescription = if (showOptions) "Close menu" else "Create content",
+//                modifier = Modifier
+//                    .size(24.dp)
+//                    .rotate(rotation)
+//            )
+//        }
+//    }
+//}
+//
+//@Composable
+//fun FabOption(
+//    icon: ImageVector,
+//    text: String,
+//    onClick: () -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//    val interactionSource = remember { MutableInteractionSource() }
+//    Surface(
+//        shape = RoundedCornerShape(25.dp),
+//        color = MaterialTheme.colorScheme.primary,
+//        tonalElevation = 4.dp, // Material 3 elevation
+//        modifier = modifier
+//            .clickable(
+//                interactionSource = interactionSource,
+//                onClick = onClick
+//            )
+//            .padding(0.dp)
+//    ) {
+//        Row(
+//            modifier = Modifier
+//                .padding(horizontal = 16.dp, vertical = 12.dp),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.spacedBy(8.dp)
+//        ) {
+//            Icon(
+//                imageVector = icon,
+//                contentDescription = text,
+//                tint = Color.White,
+//                modifier = Modifier.size(20.dp)
+//            )
+//            Text(
+//                text = text,
+//                color = Color.White,
+//                style = MaterialTheme.typography.labelLarge, // Material 3 label style
+//                fontWeight = FontWeight.Medium,
+//                fontSize = 14.sp
+//            )
+//        }
+//    }
+//}
 
 @Composable
 fun EmptyPostsState(

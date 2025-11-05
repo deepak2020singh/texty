@@ -96,4 +96,6 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.9.2")
 
     implementation(libs.androidx.compose.material3.android)
+
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 }

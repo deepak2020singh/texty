@@ -31,7 +31,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.CalendarToday
@@ -82,6 +81,16 @@ import com.example.texty.ui.view_model.PostViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.LocationServices
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -334,21 +343,12 @@ fun ProfileScreen(
 
         // Floating Action Button for current user
         if (isCurrentUser) {
-            androidx.compose.material3.FloatingActionButton(
-                onClick = onNavigateToComposePost,
-                containerColor = MaterialTheme.colorScheme.primary,
+            FloatingActionButtonWithOptions(
+                onNavigateToComposePost = onNavigateToComposePost,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
-                    .size(56.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Compose post",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            )
         }
     }
 }

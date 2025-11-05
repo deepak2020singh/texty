@@ -24,20 +24,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -363,30 +357,6 @@ fun UserItem(
                 )
             }
         }
-    }
-}
-
-// The rest of your composables remain the same...
-@Composable
-fun FloatingActionButton(
-    onNavigateToComposePost: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary)
-            .clickable { onNavigateToComposePost() }
-    ) {
-        Icon(
-            imageVector = Icons.Default.Add,
-            contentDescription = "Compose Post",
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(24.dp),
-            tint = MaterialTheme.colorScheme.onPrimary
-        )
     }
 }
 

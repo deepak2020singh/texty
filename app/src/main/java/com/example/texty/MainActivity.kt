@@ -179,7 +179,8 @@ fun AppNavHost(
                         postViewModel = postViewModel,
                         userPreferencesManager = userPreferencesManager,
                         onNavigateToFollowers = { backStack.add(Routes.Follower(it))},
-                        onNavigateToFollowing = { backStack.add(Routes.Following(it))}
+                        onNavigateToFollowing = { backStack.add(Routes.Following(it))},
+                        onNavigateToComposePost = { backStack.add(Routes.AddPost)}
                     )
                 }
 
