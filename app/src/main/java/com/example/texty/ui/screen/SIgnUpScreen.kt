@@ -87,9 +87,14 @@ fun SignUpScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val scrollState = rememberScrollState()
 
-    // Show error messages
-    error?.let {
-        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+  
+    // Show error messages *only* when error changes (prevents spam during typing)
+    LaunchedEffect(error) {
+        error?.let { errorMessage ->
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            // Clear the error after showing to reset for next attempt
+            authViewModel.clearError()
+        }
     }
 
     // Navigate on successful sign-up
