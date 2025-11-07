@@ -499,8 +499,8 @@ class AuthViewModel(
     private val _firebaseUser = MutableLiveData<FirebaseUser?>()
     val firebaseUser: LiveData<FirebaseUser?> get() = _firebaseUser
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> get() = _error
+    private val _error = MutableLiveData<String?>()  // Changed to nullable
+    val error: LiveData<String?> get() = _error       // Expose nullable
 
     private val _users = MutableLiveData<List<User>>()
     val users: LiveData<List<User>> get() = _users
@@ -520,6 +520,11 @@ class AuthViewModel(
     // Notifications
     private val _notifications = MutableLiveData<List<Notification>>()
     val notifications: LiveData<List<Notification>> get() = _notifications
+
+       // Add this function to clear the error
+    fun clearError() {
+        _error.value = null
+    }
 
     init {
         _firebaseUser.value = FirebaseAuth.getInstance().currentUser
