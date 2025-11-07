@@ -79,9 +79,14 @@ fun LoginScreen(
     val firebaseUser by authViewModel.firebaseUser.observeAsState()
     val error by authViewModel.error.observeAsState()
 
-    // Show error messages
-    error?.let {
-        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+  
+    // Show error messages *only* when error changes (prevents spam during typing)
+    LaunchedEffect(error) {
+        error?.let { errorMessage ->
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            // Clear the error after showing to reset for next attempt
+            authViewModel.clearError()
+        }
     }
 
     // Navigate on successful login and save to UserPreferencesManager
